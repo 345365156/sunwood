@@ -1,69 +1,54 @@
 <template>
   <div class="el-nav">
-    <div class="wrapper">
-      <img class="logo" src="../assets/sign.max.png">
-      <el-menu
-        :default-active="$route.name"
-        class="el-menu-demo"
-        mode="horizontal"
-        active-text-color='#409EFF'
-        text-color="#303133"
-        @select="handleSelect"
-      >
-        <el-menu-item v-for="tab in tabs" :key="tab.code" :index="tab.value">{{ tab.name }}</el-menu-item>
-      </el-menu>
-    </div>
-    <div class="header-right">
-      <div class="header-user">
-        <el-dropdown trigger='click'>
-          <img src="../assets/mine.png" width="24">
-          <el-dropdown-menu slot="dropdown">
-            <!--<el-dropdown-item>-->
-              <!--<span>{{ userName }}</span>-->
-            <!--</el-dropdown-item>-->
-            <!--<el-dropdown-item command='editPassword'>-->
-              <!--<el-button type='text'>修改密码</el-button>-->
-            <!--</el-dropdown-item>-->
-            <el-dropdown-item command='logout'>
-              <el-button type='text' @click="logout">退出登录</el-button>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+      <div class="wrapper">
+        <img class="logo" src="../assets/sign.max.png">
+        <Menu :tabs="tabs"></Menu>
+      </div>
+      <div class="header-right">
+        <div class="header-user">
+          <el-dropdown trigger='click'>
+            <img src="../assets/mine.png" width="24">
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <span>欢迎你 {{ userName }}</span>
+              </el-dropdown-item>
+              <el-dropdown-item command='logout'>
+                <el-button type='text' @click="logout">退出登录</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
+import Menu from '../components/MenuTree'
 export default {
   name: 'Header',
   data () {
     return {
-      userName: '',
+      userName: localStorage.getItem('name'),
       activeIndex: '1',
       activeIndex2: '1',
       tabs: []
     }
   },
   methods: {
-    handleSelect (index) {
-      this.$router.push({
-        name: index
-      })
-    },
     logout () {
-      this.$router.push({name: '/login'})
+      this.$router.push({name: '登录'})
       localStorage.clear()
     }
   },
   created () {
+    this.userName = localStorage.getItem('name')
     this.$api.post('api/menuTree', '',
       response => {
         if (response.status >= 200 && response.status < 300) {
           this.tabs = response.data.data
           if (response.data.code > 10005 && response.data.code < 10011) {
             this.$message.error(response.data.result)
-            this.$router.push({name: '/login'})
+            this.$router.push('/')
           }
         } else {
           console.log(response.msg) // 请求失败，response为失败信息
@@ -75,6 +60,9 @@ export default {
       let arr = index.split('/')
       return arr[arr.length - 1]
     }
+  },
+  components: {
+    Menu
   }
 }
 </script>
@@ -105,12 +93,6 @@ export default {
   padding-top: 10px;
   padding-bottom: 10px;
   margin: 0 20px;
-}
-.el-menu{
-  border-bottom: none;
-}
-li:hover{
-  color: #409EFF!important;
 }
 .header-right {
   display: flex;

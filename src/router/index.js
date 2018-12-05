@@ -1,15 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '../pages/Home'
-import Task from '../pages/Task'
-import Statistics from '../pages/Statistics'
-import User from '../pages/User'
-import History from '../pages/History'
-import Workbench from '../pages/Workbench'
-import TaskDetail from '../pages/TaskDetail'
 import Login from '../components/Login'
-import Config from '../pages/Config'
+import Home from '../pages/Home'
+import Collect from '../pages/Collect'
+import User from '../pages/User'
+import Business from '../pages/Business'
+import ChannelTemplate from '../pages/ChannelTemplate'
 
 Vue.use(Router)
 
@@ -21,58 +18,39 @@ const router = new Router({
     },
     {
       path: '/login',
-      name: '/login',
+      name: '登录',
       component: Login,
-      meta: {title: '安牛跟单系统-登录'}
+      meta: {title: '贷利宝-登录'}
     },
     {
       path: '/',
       name: 'home',
       component: Home,
       meta: {title: '欢迎'},
-      // redirect: '/config',
       children: [
         {
-          path: '/task/mine',
-          name: '/task/mine',
-          meta: {title: '我的任务'},
-          component: Task
-        },
-        {
-          path: '/task/detail',
-          name: 'detail',
-          meta: {title: '任务详情'},
-          component: TaskDetail
-        },
-        {
-          path: '/statistics',
-          name: '/statistical/realTime',
-          meta: {title: '实时统计'},
-          component: Statistics
-        },
-        {
-          path: '/history',
-          name: '/statistical/history',
-          meta: {title: '历史统计'},
-          component: History
+          path: '/collect',
+          name: '数据统计',
+          meta: {title: '贷利宝-数据统计'},
+          component: Collect
         },
         {
           path: '/user',
-          name: '/user',
-          meta: {title: '客服中心'},
+          name: '合作公司管理',
+          meta: {title: '贷利宝-合作公司管理'},
           component: User
         },
         {
-          path: '/config',
-          name: '/task/config',
-          meta: {title: '任务配置'},
-          component: Config
+          path: '/business',
+          name: 'BD管理',
+          meta: {title: '贷利宝-BD管理'},
+          component: Business
         },
         {
-          path: '/workbench',
-          name: '/workbench',
-          meta: {title: '工作台'},
-          component: Workbench
+          path: '/channel-template',
+          name: '渠道页版本管理',
+          meta: {title: '贷利宝-渠道页版本管理'},
+          component: ChannelTemplate
         }
       ]
     }
@@ -80,10 +58,27 @@ const router = new Router({
   mode: 'history'
 })
 
+let routeList = []
 router.beforeEach((to, from, next) => {
-  if (from.path === '/' && to.path === '/task/detail') {
-    next('/task/mine')
+  let index = -1
+  for (let i = 0; i < routeList.length; i++) {
+    if (routeList[i].name === to.name) {
+      index = i
+      break
+    }
   }
+  if (index !== -1) {
+    // 如果存在路由列表，则把之后的路由都删掉
+    routeList.splice(index + 1, routeList.length - index - 1)
+  } else if (to.name !== '登录') {
+    routeList.pop()
+    routeList.push(
+      {
+        'name': to.name,
+        'path': to.fullPath
+      })
+  }
+  to.meta.routeList = routeList
   next()
 })
 

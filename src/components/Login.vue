@@ -6,13 +6,13 @@
       </div>
       <div class="ms-login">
         <div class="ms-title-zx">
-          <h2>跟单系统</h2>
+          <h2>贷利宝</h2>
         </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
           <el-form-item prop="account" class="form-item">
             <el-input v-model="ruleForm.account" placeholder="账户名"></el-input>
           </el-form-item>
-          <el-form-item prop="password" class="form-item" v-if="!login">
+          <el-form-item prop="password" class="form-item">
             <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
           </el-form-item>
           <div class="login-btn">
@@ -56,24 +56,21 @@ export default {
             this.$message.error(response.data.msg)
             return
           }
-          if (response.data.code !== 10007) {
-            this.$message.error(response.data.msg)
-            this.login = false
-            return
-          }
+          // if (response.data.code !== 10007) {
+          //   this.$message.error(response.data.msg)
+          //   this.login = false
+          //   return
+          // }
           let msg = response.data.data
           localStorage.setItem('name', msg.name)
-          localStorage.setItem('alias', msg.alias)
+          localStorage.setItem('code', msg.code)
           localStorage.setItem('accessToken', msg.accessToken)
-          localStorage.setItem('userId', msg.userId)
           localStorage.setItem('role', msg.role)
-          this.$router.push({name: '/statistical/realTime'})
+          this.$router.push({path: '/collect'})
         })
     }
   },
   created () {
-    document.title = '安牛科技'
-    this.$emit('toggleHeader', 0)
   }
 }
 </script>
