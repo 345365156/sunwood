@@ -2,7 +2,15 @@
   <div class="el-nav">
       <div class="wrapper">
         <img class="logo" src="../assets/sign.max.png">
-        <Menu :tabs="tabs"></Menu>
+        <el-menu
+          :default-active="$route.name"
+          class="el-menu-demo"
+          mode="horizontal"
+          active-text-color='#409EFF'
+          text-color="#303133"
+          @select="handleSelect">
+          <Menu :tabs="tabs"></Menu>
+        </el-menu>
       </div>
       <div class="header-right">
         <div class="header-user">
@@ -38,6 +46,11 @@ export default {
     logout () {
       this.$router.push({name: '登录'})
       localStorage.clear()
+    },
+    handleSelect (index) {
+      this.$router.push({
+        name: index
+      })
     }
   },
   created () {

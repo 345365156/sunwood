@@ -1,12 +1,5 @@
 <template>
-  <el-menu
-    :default-active="$route.name"
-    class="el-menu-demo"
-    mode="horizontal"
-    active-text-color='#409EFF'
-    text-color="#303133"
-    @select="handleSelect"
-  >
+  <div class="el-menu--horizontal">
     <template v-for="tab in this.tabs" >
       <el-menu-item v-if="tab.navs.length === 0" :index="tab.name" :key="tab.code">{{ tab.name }}</el-menu-item>
       <el-submenu v-else :index="tab.name" :key="tab.code">
@@ -14,7 +7,7 @@
         <Menu :tabs="tab.navs"></Menu>
       </el-submenu>
     </template>
-  </el-menu>
+  </div>
 </template>
 
 <script>
@@ -26,11 +19,6 @@ export default {
     }
   },
   methods: {
-    handleSelect (index) {
-      this.$router.push({
-        name: index
-      })
-    }
   },
   created () {
   }
